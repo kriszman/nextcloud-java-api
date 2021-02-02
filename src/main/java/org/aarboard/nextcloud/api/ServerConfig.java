@@ -29,6 +29,7 @@ public class ServerConfig {
     private boolean useHTTPS;
     private int port;
     private boolean trustAllCertificates;
+    private boolean useSystemHttpClient;
 
     /**
      * Use this constructor if your nextcloud instance is installed in the 
@@ -52,6 +53,7 @@ public class ServerConfig {
         this.useHTTPS = useHTTPS;
         this.port = port;
         this.trustAllCertificates = false;
+        this.useSystemHttpClient = false;
     }
     
     /**
@@ -199,5 +201,22 @@ public class ServerConfig {
 	public boolean isTrustAllCertificates(){
 		return trustAllCertificates;
 	}
-    
+
+    /**
+     *
+     * @param useSystemHttpClient meaning the underlying http client shall be configured to use system properties
+     *      * in order to be able to setup certain aspects of the client (e.g http.maxConnections) by means of startup parameters
+     */
+    public void setUseSystemHttpClient(boolean useSystemHttpClient) {
+        this.useSystemHttpClient = useSystemHttpClient;
+    }
+
+    /**
+     *
+     * @return if the underlying http client should be configured to use system properties
+     * in order to be able to setup certain aspects of the client (e.g http.maxConnections) by means of startup parameters
+     */
+    public boolean isUseSystemHttpClient() {
+        return useSystemHttpClient;
+    }
 }

@@ -43,6 +43,7 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.apache.http.ssl.SSLContexts;
 
@@ -222,18 +223,22 @@ public class ConnectorCommon
 					try {
 						SSLContext sslContext = SSLContexts.custom()
 							.loadTrustMaterial(null, TrustAllStrategy.INSTANCE).build();
-						HTTPC_CLIENT = HttpAsyncClients.custom()
-							.setSSLHostnameVerifier((NoopHostnameVerifier.INSTANCE))
-							.setSSLContext(sslContext)
-							.build();
+						HttpAsyncClientBuilder httpAsyncClientBuilder = HttpAsyncClients.custom()
+                                .setSSLHostnameVerifier((NoopHostnameVerifier.INSTANCE))
+                                .setSSLContext(sslContext);
+						if (serverConfig.isUseSystemHttpClient()) {
+						    httpAsyncClientBuilder.useSystemProperties();
+                        }
+						HTTPC_CLIENT = httpAsyncClientBuilder.build();
 					} catch (KeyManagementException | NoSuchAlgorithmException
 							| KeyStoreException e) {
 						throw new IOException(e);
-					} 
-					
+					}
+				} else if (serverConfig.isUseSystemHttpClient()) {
+					HTTPC_CLIENT = HttpAsyncClients.createSystem();
 				} else {
-					HTTPC_CLIENT = HttpAsyncClients.createDefault();
-				}
+                    HTTPC_CLIENT = HttpAsyncClients.createDefault();
+                }
 				
 				HTTPC_CLIENT.start();
 			}

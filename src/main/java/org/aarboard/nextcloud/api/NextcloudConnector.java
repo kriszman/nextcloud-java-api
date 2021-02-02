@@ -126,6 +126,10 @@ public class NextcloudConnector {
 		_serverConfig.setSubPathPrefix(subpathPrefix);
 	}
 
+	public void useSystemHttpClient(boolean useSystemHttpClient) {
+	    _serverConfig.setUseSystemHttpClient(useSystemHttpClient);
+    }
+
     /**
      * Creates a user
      *
